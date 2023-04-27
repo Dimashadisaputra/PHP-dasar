@@ -13,7 +13,7 @@ if(isset($_POST["cari"])){
 </head>
 <body>
 
-<h1>Halaman Administratori</h1>
+<h1>Halaman Administrator</h1>
 
 <a href="tambah.php">Tambah data Mahasiswa</a>
 <br>
