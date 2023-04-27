@@ -30,7 +30,11 @@ function tambah($data) {
 	$nama = htmlspecialchars($data["nama"]);
 	$email = htmlspecialchars($data["email"]);
 	$jurusan = htmlspecialchars($data["jurusan"]);
-	$gambar = htmlspecialchars($data["gambar"]);
+
+	$gambar = upload();
+	if(!$gambar){
+		return false;
+	}
 
 	$sql = "INSERT INTO mahasiswa
 				VALUES
@@ -39,6 +43,43 @@ function tambah($data) {
 	mysqli_query($conn, $sql);
 
 	return mysqli_affected_rows($conn);
+}
+
+function upload(){
+	$namafile = $_FILES['gambar']['name'];
+	$ukuranfile = $_FILES['gambar']['size'];
+	$error = $_FILES['gambar']['error'];
+	$tmpname = $_FILES['gambar']['tmp_name'];
+
+	//cek gambar diupload kosong
+	if($error === 4){
+		echo "<script>alert('pilih poto dulu');</script>";
+	}
+	return false;
+
+	//cek apa yang di upload gambar atau bukan
+	$ektengambarvalid = ['jpg', 'png', 'jpeg'];
+	$ektengambar = explode('.', $namafile);
+	$ektengambar = strtolower(end($ektengambar));
+	if ( !in_array($ektengambar, $ektengambarvalid)){
+		echo "<script>alert('bukan photo');</script>";
+	}
+	return false;
+
+	//cek gambar terlalu besar 
+	if ($ukuranfile > 1000000){
+		echo "<script>alert('tidak boleh lebih dari 1MB');</script>";
+	} return false;
+
+	//setelah lolos semua
+	//generate name gambar baru
+	$namafilebaru = uniqid();
+	$namafilebaru .= '.';
+	$namafilebaru .= $ektengambar;
+
+	move_uploaded_file($tmpname, 'img/'.$namafilebaru);
+
+	return $namafilebaru;
 }
 
 
